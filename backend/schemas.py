@@ -149,8 +149,9 @@ class InventoryBase(BaseModel):
 class InventoryCreate(InventoryBase):
     pass
 
-
 class InventoryUpdate(BaseModel):
+    product_id: Optional[int] = None
+    warehouse_id: Optional[int] = None
     quantity: Optional[int] = None
     reserved_quantity: Optional[int] = None
 

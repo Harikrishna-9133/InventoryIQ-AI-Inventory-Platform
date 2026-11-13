@@ -95,13 +95,12 @@ export default function Inventory() {
 
   try {
     if (editingId !== null) {
-      await updateInventory(editingId, data)
-    } else {
-      await createInventory({
-        product_id: Number(form.product_id),
-        warehouse_id: Number(form.warehouse_id),
-        ...data,
-      })
+      await updateInventory(editingId, {
+  product_id: Number(form.product_id),
+  warehouse_id: Number(form.warehouse_id),
+  quantity: Number(form.quantity),
+  reserved_quantity: Number(form.reserved_quantity),
+})
     }
 
     setShowAdd(false)
