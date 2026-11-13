@@ -35,6 +35,7 @@ export default function Inventory() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
   const [showAdd, setShowAdd] = useState(false)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState({ product_id: '', warehouse_id: '', quantity: '0', reserved_quantity: '0' })
   const [saving, setSaving] = useState(false)
   const [deleteId, setDeleteId] = useState<number | null>(null)
@@ -70,18 +71,55 @@ export default function Inventory() {
   })
 
   const statusCounts = ['In Stock','Low Stock','Critical','Overstock','Out of Stock'].map(s => ({ label: s, count: enriched.filter(i => i.status === s).length }))
+  const handleEdit = (item: any) => {
+  setEditingId(item.id)
+  setForm({
+    product_id: String(item.product_id),
+    warehouse_id: String(item.warehouse_id),
+    quantity: String(item.quantity),
+    reserved_quantity: String(item.reserved_quantity),
+  })
+  setShowAdd(true)
+}
+
 
   const handleAdd = async () => {
-    if (!form.product_id || !form.warehouse_id) return
-    setSaving(true)
-    try {
-      await createInventory({ product_id: Number(form.product_id), warehouse_id: Number(form.warehouse_id), quantity: Number(form.quantity), reserved_quantity: Number(form.reserved_quantity) })
-      setShowAdd(false)
-      setForm({ product_id: '', warehouse_id: '', quantity: '0', reserved_quantity: '0' })
-      load()
-    } catch (e: any) { alert(e.message || 'Failed') }
-    finally { setSaving(false) }
+  if (!form.product_id || !form.warehouse_id) return
+
+  setSaving(true)
+
+  const data = {
+    quantity: Number(form.quantity),
+    reserved_quantity: Number(form.reserved_quantity),
   }
+
+  try {
+    if (editingId !== null) {
+      await updateInventory(editingId, data)
+    } else {
+      await createInventory({
+        product_id: Number(form.product_id),
+        warehouse_id: Number(form.warehouse_id),
+        ...data,
+      })
+    }
+
+    setShowAdd(false)
+    setEditingId(null)
+    setForm({
+      product_id: '',
+      warehouse_id: '',
+      quantity: '0',
+      reserved_quantity: '0',
+    })
+
+    await load()
+  } catch (e: any) {
+    alert(e.message || 'Failed')
+  } finally {
+    setSaving(false)
+  }
+}
 
   const handleDelete = async (id: number) => {
     try { await deleteInventory(id); setDeleteId(null); load() }
@@ -157,7 +195,13 @@ export default function Inventory() {
                   <td><span className={'badge ' + (statusBadge[item.status] || 'badge-gray')}>{item.status}</span></td>
                   <td>
                     <div style={{ display: 'flex', gap: 4 }}>
-                      <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 11.5, height: 26 }}>Edit</button>
+                      <button
+  className="btn-ghost"
+  onClick={() => handleEdit(item)}
+  style={{ padding: '3px 8px', fontSize: 11.5, height: 26 }}
+>
+  Edit
+</button>
                       <button onClick={() => setDeleteId(item.id)} style={{ padding: '3px 8px', fontSize: 11.5, height: 26, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 5, color: '#ef4444', cursor: 'pointer' }}>Remove</button>
                     </div>
                   </td>
@@ -172,7 +216,9 @@ export default function Inventory() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)' }} onClick={() => setShowAdd(false)}>
           <div className="card animate-in" style={{ width: 440, padding: 24, margin: 16 }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700 }}>Add Inventory Record</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 700 }}>
+  {editingId !== null ? 'Edit Inventory Record' : 'Add Inventory Record'}
+</h2>
               <button className="btn-ghost" style={{ padding: '4px 8px' }} onClick={() => setShowAdd(false)}>X</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -203,7 +249,9 @@ export default function Inventory() {
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 18, justifyContent: 'flex-end' }}>
               <button className="btn-ghost" onClick={() => setShowAdd(false)}>Cancel</button>
-              <button className="btn-primary" onClick={handleAdd} disabled={saving}>{saving ? 'Adding...' : 'Add Inventory'}</button>
+              <button className="btn-primary" onClick={handleAdd} disabled={saving}>
+  {saving ? 'Saving...' : editingId !== null ? 'Update Inventory' : 'Add Inventory'}
+</button>
             </div>
           </div>
         </div>
