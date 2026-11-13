@@ -1,0 +1,5 @@
+purchase_order_id,supplier_id,order_date,status,total_items,total_amount
+1,1,2025-11-02,received,10,5000
+2,2,2025-11-05,pending,5,22500
+3,3,2025-11-08,received,20,15000
+4,1,2025-11-12,pending,15,7500

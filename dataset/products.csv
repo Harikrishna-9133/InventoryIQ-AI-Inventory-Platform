@@ -1,0 +1,11 @@
+product_id,product_name,category,sku,unit_cost,selling_price,reorder_level,supplier_id
+1,Wireless Mouse,Electronics,WM001,500,650,20,1
+2,Bluetooth Camera,Electronics,BC002,4500,5500,8,2
+3,USB Keyboard,Electronics,UK003,750,950,15,1
+4,Laptop Stand,Accessories,LS004,1200,1500,10,3
+5,Wireless Headphones,Electronics,WH005,1800,2300,12,2
+6,HDMI Cable,Accessories,HC006,250,400,25,3
+7,Power Bank,Electronics,PB007,1100,1450,12,1
+8,Webcam,Electronics,WC008,2200,2800,10,2
+9,Laptop Backpack,Accessories,LB009,1600,2100,10,3
+10,USB Hub,Accessories,UH010,600,850,18,1

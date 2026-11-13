@@ -1,0 +1,10 @@
+{
+  "description": "Create stunning, professional front-end designs effortlessly with this intuitive web application, perfect for developers and designers seeking efficiency.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

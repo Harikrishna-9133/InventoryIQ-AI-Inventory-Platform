@@ -1,0 +1,4 @@
+supplier_id,supplier_name,email,phone,city
+1,TechSource Supplies,sales@techsource.example,+91-9000000001,Chennai
+2,Digital World Traders,orders@digitalworld.example,+91-9000000002,Coimbatore
+3,Accessory Hub,contact@accessoryhub.example,+91-9000000003,Bengaluru
